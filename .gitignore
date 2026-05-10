@@ -7,6 +7,7 @@ yarn-error.log
 # Database
 dev.db
 dev.db-journal
+*.db
 
 # Python
 __pycache__/

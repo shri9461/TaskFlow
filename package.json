@@ -1,0 +1,12 @@
+{
+  "name": "taskflow-root",
+  "version": "1.0.0",
+  "description": "Root management for TaskFlow",
+  "scripts": {
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "dev": "npx concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "backend": "npm run dev --prefix backend",
+    "frontend": "npm run dev --prefix frontend",
+    "studio": "npm run db:studio --prefix backend"
+  }
+}
