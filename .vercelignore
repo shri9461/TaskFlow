@@ -1,0 +1,9 @@
+# Files excluded from Vercel deployment uploads
+node_modules
+.vercel
+.env
+*.log
+frontend/dist
+**/__pycache__
+*.pyc
+scheduler.db

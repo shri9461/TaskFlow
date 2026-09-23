@@ -177,6 +177,7 @@ const task = {
       const ids = where.id.in.map(toObjectId);
       query._id = { $in: ids };
     }
+    if (where.userId) query.userId = where.userId;
     const result = await database.collection('tasks').updateMany(query, { $set: { ...data, updatedAt: new Date() } });
     return { count: result.modifiedCount };
   },

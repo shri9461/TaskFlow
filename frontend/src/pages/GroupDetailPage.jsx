@@ -58,6 +58,26 @@ export default function GroupDetailPage() {
     loadGroupWorkspace();
   }, [loadGroupWorkspace]);
 
+  // Live-refresh tasks + feed while the group is open.
+  // Replaces the WebSocket GROUP_MESSAGE_NEW push (Vercel has no
+  // long-lived connections), so teammates' updates appear within 15s.
+  useEffect(() => {
+    if (activeTab !== 'feed') return;
+    const interval = setInterval(async () => {
+      try {
+        const [tasksRes, msgsRes] = await Promise.all([
+          api.get(`/groups/${groupId}/tasks`),
+          api.get(`/groups/${groupId}/messages`),
+        ]);
+        setTasks(tasksRes.data);
+        setMessages(msgsRes.data);
+      } catch {
+        // transient errors — keep polling
+      }
+    }, 15_000);
+    return () => clearInterval(interval);
+  }, [activeTab, groupId]);
+
   // Scroll community feed to bottom on new message
   useEffect(() => {
     if (activeTab === 'feed' && messagesEndRef.current) {

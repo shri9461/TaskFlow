@@ -1,6 +1,6 @@
 import { Routes, Route, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useWebSocket } from '../hooks/useWebSocket';
+import { useReminders } from '../hooks/useReminders';
 import DashboardPage from '../pages/DashboardPage';
 import GroupsHubPage from '../pages/GroupsHubPage';
 import GroupDetailPage from '../pages/GroupDetailPage';
@@ -8,7 +8,7 @@ import GroupDetailPage from '../pages/GroupDetailPage';
 export default function AppShell() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  useWebSocket(); // connect WebSocket for live reminders
+  useReminders(); // poll for live reminders (works without a WebSocket server)
 
   const handleLogout = () => { logout(); navigate('/login'); };
 

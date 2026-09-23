@@ -5,7 +5,12 @@ const { authenticateToken } = require('../middleware/auth');
 const router = express.Router();
 const prisma = new PrismaClient();
 
-// GET /api/reminders/pending — used by Django scheduler
+// Both endpoints require auth and are scoped to the requesting user —
+// this API is publicly reachable in production, so it must never
+// expose other users' tasks.
+router.use(authenticateToken);
+
+// GET /api/reminders/pending — reminders due in the next 15 minutes
 router.get('/pending', async (req, res) => {
   try {
     const now = new Date();
@@ -13,6 +18,7 @@ router.get('/pending', async (req, res) => {
 
     const tasks = await prisma.task.findMany({
       where: {
+        userId: req.user.userId,
         reminderSent: false,
         completed: false,
         reminderAt: {
@@ -30,19 +36,19 @@ router.get('/pending', async (req, res) => {
   }
 });
 
-// POST /api/reminders/mark-sent — called by Django after sending notification
+// POST /api/reminders/mark-sent — called after the user has been notified
 router.post('/mark-sent', async (req, res) => {
   try {
     const { taskIds } = req.body;
     if (!taskIds || !Array.isArray(taskIds))
       return res.status(400).json({ error: 'taskIds array required' });
 
-    await prisma.task.updateMany({
-      where: { id: { in: taskIds } },
+    const result = await prisma.task.updateMany({
+      where: { id: { in: taskIds }, userId: req.user.userId },
       data: { reminderSent: true },
     });
 
-    res.json({ marked: taskIds.length });
+    res.json({ marked: result.count });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to mark reminders' });
