@@ -2,6 +2,8 @@ import { Routes, Route, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useWebSocket } from '../hooks/useWebSocket';
 import DashboardPage from '../pages/DashboardPage';
+import GroupsHubPage from '../pages/GroupsHubPage';
+import GroupDetailPage from '../pages/GroupDetailPage';
 
 export default function AppShell() {
   const { user, logout } = useAuth();
@@ -23,6 +25,14 @@ export default function AppShell() {
           id="nav-dashboard"
         >
           <span className="sidebar-icon">📋</span> Dashboard
+        </NavLink>
+
+        <NavLink
+          to="/groups"
+          className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}
+          id="nav-groups"
+        >
+          <span className="sidebar-icon">👥</span> Community & Groups
         </NavLink>
 
         <NavLink
@@ -52,6 +62,8 @@ export default function AppShell() {
       <main className="main-content">
         <Routes>
           <Route path="/" element={<DashboardPage />} />
+          <Route path="/groups" element={<GroupsHubPage />} />
+          <Route path="/groups/:groupId" element={<GroupDetailPage />} />
           <Route path="/focus" element={<FocusPage />} />
         </Routes>
       </main>

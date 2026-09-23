@@ -7,6 +7,7 @@ const { WebSocketServer } = require('ws');
 const authRoutes = require('./routes/auth');
 const taskRoutes = require('./routes/tasks');
 const reminderRoutes = require('./routes/reminders');
+const groupRoutes = require('./routes/groups');
 const { startReminderPoller } = require('./services/reminderPoller');
 
 const app = express();
@@ -34,13 +35,23 @@ wss.on('connection', (ws, req) => {
 app.locals.wsClients = clients;
 
 // Middleware
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
+      callback(null, true);
+    } else {
+      callback(null, true);
+    }
+  },
+  credentials: true,
+}));
 app.use(express.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/reminders', reminderRoutes);
+app.use('/api/groups', groupRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

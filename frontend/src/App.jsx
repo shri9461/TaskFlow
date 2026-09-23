@@ -4,6 +4,7 @@ import { ToastProvider } from './context/ToastContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
+import JoinGroupPage from './pages/JoinGroupPage';
 import AppShell from './components/AppShell';
 
 function PrivateRoute({ children }) {
@@ -18,6 +19,7 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/join/:inviteCode" element={<JoinGroupPage />} />
           <Route
             path="/*"
             element={

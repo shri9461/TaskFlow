@@ -1,5 +1,5 @@
 const express = require('express');
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require('../db');
 const { authenticateToken } = require('../middleware/auth');
 const { computeReminderAt } = require('../utils/timingHelpers');
 
